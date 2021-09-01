@@ -88,7 +88,7 @@ void Prof_libero(exam* esame, date m[][n_slot][n_aula], int i, int n, int giorno
     }
 }
 
-void Inizializza(exam* esame, date m[][n_slot][n_aula]){
+void Inizializza_date(date m[][n_slot][n_aula]){
     for(int i=0; i<n_giorno; i++)
     {
         for(int j=0; j<n_slot; j++)
@@ -101,7 +101,9 @@ void Inizializza(exam* esame, date m[][n_slot][n_aula]){
             }
         }
     }
+}
 
+void Inizializza_exam(exam* esame){
     for(int i=0; i<n_esame; i++)
     {
         esame[i].id=i+1;
@@ -212,7 +214,8 @@ int main()
     esame[8].n_parall=2;
     esame[8].id_parall[1]=esame[0].id;*/
 
-    Inizializza(esame, m);
+    Inizializza_date(m);
+    Inizializza_exam(esame);
 
     // Stampa dell'elenco degli esami
 
