@@ -88,16 +88,7 @@ void Prof_libero(exam* esame, date m[][n_slot][n_aula], int i, int n, int giorno
     }
 }
 
-int main()
-{
-    int giorno=0, slot=0, aula=0;
-    date m[n_giorno][n_slot][n_aula];
-    exam esame[n_esame];
-    bool mettibile = true;
-    bool prof_libero = true;
-
-    // inizializzazioni
-
+void Inizializza(exam* esame, date m[][n_slot][n_aula]){
     for(int i=0; i<n_giorno; i++)
     {
         for(int j=0; j<n_slot; j++)
@@ -153,6 +144,75 @@ int main()
     esame[0].id_parall[1]=esame[8].id;
     esame[8].n_parall=2;
     esame[8].id_parall[1]=esame[0].id;
+}
+
+int main()
+{
+    int giorno=0, slot=0, aula=0;
+    date m[n_giorno][n_slot][n_aula];
+    exam esame[n_esame];
+    bool mettibile = true;
+    bool prof_libero = true;
+
+    // inizializzazioni
+
+    /*for(int i=0; i<n_giorno; i++)
+    {
+        for(int j=0; j<n_slot; j++)
+        {
+            for(int k=0; k<n_aula; k++)
+            {
+                m[i][j][k].id_esame=0;
+                m[i][j][k].durata_esame=0;
+                m[i][j][k].prof_esame=0;
+            }
+        }
+    }
+
+    for(int i=0; i<n_esame; i++)
+    {
+        esame[i].id=i+1;
+        esame[i].piazzato=false;
+        esame[i].parall_piazzato=false;
+        esame[i].durata=1;
+        esame[i].prof=1001+i;
+        esame[i].n_parall=1;
+        for (int j=0; j<n_max_parall; j++)
+        {
+            esame[i].id_parall[j]=0;
+        }
+        esame[i].id_parall[0]=esame[i].id;
+    }
+
+    for(int i=1; i<n_esame; i=i+2)
+    {
+        esame[i].piazzato=false;
+        esame[i].durata=2;
+    }
+
+    for(int i=0; i<n_esame; i=i+3)
+    {
+        esame[i].piazzato=false;
+        esame[i].durata=4;
+    }
+
+    for(int i=0; i<n_esame; i=i+4)
+    {
+        esame[i].piazzato=false;
+        esame[i].durata=3;
+    }
+
+    for(int i=0; i<n_esame-5; i=i+5)
+    {
+        esame[i].prof = esame[i+2].prof = esame[i+5].prof;
+    }
+
+    esame[0].n_parall=2;
+    esame[0].id_parall[1]=esame[8].id;
+    esame[8].n_parall=2;
+    esame[8].id_parall[1]=esame[0].id;*/
+
+    Inizializza(esame, m);
 
     // Stampa dell'elenco degli esami
 
