@@ -69,20 +69,22 @@ void print_calendario(date m[][n_slot][n_aula]){
     }
 }
 
-void Mettibile(exam* esame, date m[][n_slot][n_aula], int i, int n, int giorno, int slot, int aula, bool* mettibile){
-    for(int j=0; j<esame[esame[i].id_parall[n]-1].durata; j++)
+void Mettibile(exam* esame, date m[][n_slot][n_aula],
+               int cont_esami, int cont_parall, int giorno, int slot, int aula, bool* mettibile){
+    for(int j=0; j<esame[esame[cont_esami].id_parall[cont_parall]-1].durata; j++)
     {
         if (m[giorno][slot+j][aula].id_esame!=0)
             *mettibile = false;
     }
 }
 
-void Prof_libero(exam* esame, date m[][n_slot][n_aula], int i, int n, int giorno, int slot, int aula, bool* prof_libero){
-    for(int j=0; j<esame[esame[i].id_parall[n]-1].durata; j++)
+void Prof_libero(exam* esame, date m[][n_slot][n_aula],
+                 int cont_esami, int cont_parall, int giorno, int slot, int aula, bool* prof_libero){
+    for(int j=0; j<esame[esame[cont_esami].id_parall[cont_parall]-1].durata; j++)
     {
         for (int k=0; k<n_aula; k++)
         {
-            if(m[giorno][slot+j][k].prof_esame==esame[esame[i].id_parall[n]-1].prof && aula!=k)
+            if(m[giorno][slot+j][k].prof_esame==esame[esame[cont_esami].id_parall[cont_parall]-1].prof && aula!=k)
                 *prof_libero = false;
         }
     }
@@ -103,7 +105,7 @@ void Inizializza_date(date m[][n_slot][n_aula]){
     }
 }
 
-void Inizializza_exam(exam* esame){
+void Inizializza_exam_default(exam* esame){
     for(int i=0; i<n_esame; i++)
     {
         esame[i].id=i+1;
@@ -118,7 +120,9 @@ void Inizializza_exam(exam* esame){
         }
         esame[i].id_parall[0]=esame[i].id;
     }
+}
 
+void Personalizza_exam(exam* esame){
     for(int i=1; i<n_esame; i=i+2)
     {
         esame[i].piazzato=false;
@@ -148,6 +152,17 @@ void Inizializza_exam(exam* esame){
     esame[8].id_parall[1]=esame[0].id;
 }
 
+void Inserisci_esame(exam* esame, date m[][n_slot][n_aula],
+                     int cont_esami, int cont_parall, int giorno, int slot, int aula){
+    esame[esame[cont_esami].id_parall[cont_parall]-1].piazzato=true;
+    for(int j=0; j<esame[esame[cont_esami].id_parall[cont_parall]-1].durata; j++)
+    {
+        m[giorno][slot+j][aula].id_esame = esame[esame[cont_esami].id_parall[cont_parall]-1].id;
+        m[giorno][slot+j][aula].durata_esame = esame[esame[cont_esami].id_parall[cont_parall]-1].durata;
+        m[giorno][slot+j][aula].prof_esame = esame[esame[cont_esami].id_parall[cont_parall]-1].prof;
+    }
+}
+
 int main()
 {
     int giorno=0, slot=0, aula=0;
@@ -158,144 +173,41 @@ int main()
 
     // inizializzazioni
 
-    /*for(int i=0; i<n_giorno; i++)
-    {
-        for(int j=0; j<n_slot; j++)
-        {
-            for(int k=0; k<n_aula; k++)
-            {
-                m[i][j][k].id_esame=0;
-                m[i][j][k].durata_esame=0;
-                m[i][j][k].prof_esame=0;
-            }
-        }
-    }
-
-    for(int i=0; i<n_esame; i++)
-    {
-        esame[i].id=i+1;
-        esame[i].piazzato=false;
-        esame[i].parall_piazzato=false;
-        esame[i].durata=1;
-        esame[i].prof=1001+i;
-        esame[i].n_parall=1;
-        for (int j=0; j<n_max_parall; j++)
-        {
-            esame[i].id_parall[j]=0;
-        }
-        esame[i].id_parall[0]=esame[i].id;
-    }
-
-    for(int i=1; i<n_esame; i=i+2)
-    {
-        esame[i].piazzato=false;
-        esame[i].durata=2;
-    }
-
-    for(int i=0; i<n_esame; i=i+3)
-    {
-        esame[i].piazzato=false;
-        esame[i].durata=4;
-    }
-
-    for(int i=0; i<n_esame; i=i+4)
-    {
-        esame[i].piazzato=false;
-        esame[i].durata=3;
-    }
-
-    for(int i=0; i<n_esame-5; i=i+5)
-    {
-        esame[i].prof = esame[i+2].prof = esame[i+5].prof;
-    }
-
-    esame[0].n_parall=2;
-    esame[0].id_parall[1]=esame[8].id;
-    esame[8].n_parall=2;
-    esame[8].id_parall[1]=esame[0].id;*/
-
     Inizializza_date(m);
-    Inizializza_exam(esame);
+    Inizializza_exam_default(esame);
+    Personalizza_exam(esame);
 
     // Stampa dell'elenco degli esami
 
-    /*for(int i=0; i<n_giorno; i++)
-    {
-        for(int j=0; j<n_slot; j++)
-        {
-            for(int k=0; k<n_aula; k++)
-            {
-                cout<<"\t"<<m[i][j][k];
-            }
-            cout<<endl;
-        }
-        cout<<endl<<endl;
-    }*/
-
     print_esami(esame);
-
-    /*cout<<endl;
-    for(int i=0; i<n_esame; i++)
-    {
-        cout<<"Esame id: "<<esame[i].id<<"\tStato: ";
-        for (int j=0; j<n_max_parall; j++)
-        {
-            cout<<esame[esame[i].id_parall[j]].piazzato<<" ";
-        }
-        cout<<"\tDurata: "<<esame[i].durata<<
-            "\t Prof: "<<esame[i].prof<<"\tPrall: ";
-        for (int j=0; j<n_max_parall; j++)
-        {
-            cout<<esame[i].id_parall[j]<<" ";
-        }
-        cout<<endl;
-    }
-    cout<<endl<<endl;*/
 
     // Procedura di inserimento degli esami nel calendario
 
-    for (int i=0; i<n_esame; i++)
+    for (int cont_esami=0; cont_esami<n_esame; cont_esami++)
     {
-        for (int n=0; n<esame[i].n_parall; n++)
+        for (int cont_parall=0; cont_parall<esame[cont_esami].n_parall; cont_parall++)
         {
-            esame[i].parall_piazzato = true;
-            for (int m=0; m<esame[i].n_parall; m++)
+            esame[cont_esami].parall_piazzato = true;
+            for (int cont_parall_interno=0; cont_parall_interno<esame[cont_esami].n_parall; cont_parall_interno++)
             {
-                if (!esame[esame[i].id_parall[m]-1].piazzato)
+                if (!esame[esame[cont_esami].id_parall[cont_parall_interno]-1].piazzato)
                 {
-                    esame[i].parall_piazzato = false;
+                    esame[cont_esami].parall_piazzato = false;
                 }
             }
-            while((giorno<n_giorno) && !esame[esame[i].id_parall[n]-1].piazzato)
+            while((giorno<n_giorno) && !esame[esame[cont_esami].id_parall[cont_parall]-1].piazzato)
             {
-                while(((slot + esame[esame[i].id_parall[n]-1].durata - 1)<n_slot) && !esame[esame[i].id_parall[n]-1].piazzato)
+                while(((slot + esame[esame[cont_esami].id_parall[cont_parall]-1].durata - 1)<n_slot) &&
+                !esame[esame[cont_esami].id_parall[cont_parall]-1].piazzato)
                 {
-                    while ((aula<n_aula) && !esame[esame[i].id_parall[n]-1].piazzato)
+                    while ((aula<n_aula) && !esame[esame[cont_esami].id_parall[cont_parall]-1].piazzato)
                     {
-
-                        /*for(int j=0; j<esame[esame[i].id_parall[n]-1].durata; j++)
-                        {
-                            for (int k=0; k<n_aula; k++)
-                            {
-                                if(m[giorno][slot+j][k].prof_esame==esame[esame[i].id_parall[n]-1].prof && aula!=k)
-                                    prof_libero = false;
-                            }
-                            if (m[giorno][slot+j][aula].id_esame!=0)
-                                mettibile = false;
-                        }*/
-
-                        Mettibile(esame, m, i, n, giorno, slot, aula, &mettibile);
-                        Prof_libero(esame, m, i, n, giorno, slot, aula, &prof_libero);
+                        Mettibile(esame, m, cont_esami, cont_parall, giorno, slot, aula, &mettibile);
+                        Prof_libero(esame, m, cont_esami, cont_parall, giorno, slot, aula, &prof_libero);
 
                         if(mettibile && prof_libero)
                         {
-                            esame[esame[i].id_parall[n]-1].piazzato=true;
-                            for(int j=0; j<esame[esame[i].id_parall[n]-1].durata; j++)
-                            {
-                                m[giorno][slot+j][aula].id_esame = esame[esame[i].id_parall[n]-1].id;
-                                m[giorno][slot+j][aula].durata_esame = esame[esame[i].id_parall[n]-1].durata;
-                                m[giorno][slot+j][aula].prof_esame = esame[esame[i].id_parall[n]-1].prof;
-                            }
+                            Inserisci_esame(esame, m, cont_esami, cont_parall, giorno, slot, aula);
                         }
                         else
                         {
@@ -319,47 +231,5 @@ int main()
     // Stampa del calendario compilato e dell'elenco degli esami per sapere quali sono rimasti eventualmente non messi
 
     print_calendario(m);
-
-    /*cout<<"Calendario: "<<endl<<endl;
-    cout<<"Id esame - Durata - Prof     > Aule"<<endl<<endl<<"             v"<<endl<<"      Slot e Giorni"<<endl<<endl<<endl;
-
-    for(int i=0; i<n_giorno; i++)
-    {
-        for(int j=0; j<n_slot; j++)
-        {
-            for(int k=0; k<n_aula; k++)
-            {
-                cout<<"\t"<<m[i][j][k].id_esame<<" - "<<m[i][j][k].durata_esame<<" - "<<m[i][j][k].prof_esame;
-            }
-            cout<<endl;
-        }
-        cout<<endl<<endl;
-    }*/
-
     print_esami(esame);
-
-    /*cout<<endl;
-    for(int i=0; i<n_esame; i++)
-    {
-        cout<<"Esame id: "<<esame[i].id<<"\tStato: ";
-        for (int j=0; j<n_max_parall; j++)
-        {
-            if(esame[i].id_parall[j]!=0)
-            {
-                cout<<esame[esame[i].id_parall[j]-1].piazzato<<" ";
-            }
-            else
-            {
-                cout<<"0 ";
-            }
-        }
-        cout<<"\tDurata: "<<esame[i].durata<<
-            "\t Prof: "<<esame[i].prof<<"\tPrall: ";
-        for (int j=0; j<n_max_parall; j++)
-        {
-            cout<<esame[i].id_parall[j]<<" ";
-        }
-        cout<<endl;
-    }
-    cout<<endl<<endl;*/
 }
