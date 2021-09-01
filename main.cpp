@@ -69,6 +69,25 @@ void print_calendario(date m[][n_slot][n_aula]){
     }
 }
 
+void Mettibile(exam* esame, date m[][n_slot][n_aula], int i, int n, int giorno, int slot, int aula, bool* mettibile){
+    for(int j=0; j<esame[esame[i].id_parall[n]-1].durata; j++)
+    {
+        if (m[giorno][slot+j][aula].id_esame!=0)
+            *mettibile = false;
+    }
+}
+
+void Prof_libero(exam* esame, date m[][n_slot][n_aula], int i, int n, int giorno, int slot, int aula, bool* prof_libero){
+    for(int j=0; j<esame[esame[i].id_parall[n]-1].durata; j++)
+    {
+        for (int k=0; k<n_aula; k++)
+        {
+            if(m[giorno][slot+j][k].prof_esame==esame[esame[i].id_parall[n]-1].prof && aula!=k)
+                *prof_libero = false;
+        }
+    }
+}
+
 int main()
 {
     int giorno=0, slot=0, aula=0;
@@ -190,9 +209,8 @@ int main()
                 {
                     while ((aula<n_aula) && !esame[esame[i].id_parall[n]-1].piazzato)
                     {
-                        // ////////////////////////
 
-                        for(int j=0; j<esame[esame[i].id_parall[n]-1].durata; j++)
+                        /*for(int j=0; j<esame[esame[i].id_parall[n]-1].durata; j++)
                         {
                             for (int k=0; k<n_aula; k++)
                             {
@@ -201,9 +219,10 @@ int main()
                             }
                             if (m[giorno][slot+j][aula].id_esame!=0)
                                 mettibile = false;
-                        }
+                        }*/
 
-                        // //////////////////////
+                        Mettibile(esame, m, i, n, giorno, slot, aula, &mettibile);
+                        Prof_libero(esame, m, i, n, giorno, slot, aula, &prof_libero);
 
                         if(mettibile && prof_libero)
                         {
