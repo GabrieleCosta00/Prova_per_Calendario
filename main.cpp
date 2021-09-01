@@ -3,7 +3,7 @@
 #define n_giorno 5
 #define n_slot 6
 #define n_aula 4
-#define n_esame 10
+#define n_esame 20
 #define n_max_parall 5
 
 using namespace std;
@@ -23,6 +23,51 @@ struct date {
     int durata_esame;
     int prof_esame;
 };
+
+void print_esami(const exam* esame){
+    cout<<endl;
+    for(int i=0; i<n_esame; i++)
+    {
+        cout<<"Esame id: "<<esame[i].id<<"\tStato: ";
+        for (int j=0; j<n_max_parall; j++)
+        {
+            if(esame[i].id_parall[j]!=0)
+            {
+                cout<<esame[esame[i].id_parall[j]-1].piazzato<<" ";
+            }
+            else
+            {
+                cout<<"0 ";
+            }
+        }
+        cout<<"\tDurata: "<<esame[i].durata<<
+            "\t Prof: "<<esame[i].prof<<"\tPrall: ";
+        for (int j=0; j<n_max_parall; j++)
+        {
+            cout<<esame[i].id_parall[j]<<" ";
+        }
+        cout<<endl;
+    }
+    cout<<endl<<endl;
+}
+
+void print_calendario(date m[][n_slot][n_aula]){
+    cout<<"Calendario: "<<endl<<endl;
+    cout<<"Id esame - Durata - Prof     > Aule"<<endl<<endl<<"             v"<<endl<<"      Slot e Giorni"<<endl<<endl<<endl;
+
+    for(int i=0; i<n_giorno; i++)
+    {
+        for(int j=0; j<n_slot; j++)
+        {
+            for(int k=0; k<n_aula; k++)
+            {
+                cout<<"\t"<<m[i][j][k].id_esame<<" - "<<m[i][j][k].durata_esame<<" - "<<m[i][j][k].prof_esame;
+            }
+            cout<<endl;
+        }
+        cout<<endl<<endl;
+    }
+}
 
 int main()
 {
@@ -105,7 +150,9 @@ int main()
         cout<<endl<<endl;
     }*/
 
-    cout<<endl;
+    print_esami(esame);
+
+    /*cout<<endl;
     for(int i=0; i<n_esame; i++)
     {
         cout<<"Esame id: "<<esame[i].id<<"\tStato: ";
@@ -121,7 +168,7 @@ int main()
         }
         cout<<endl;
     }
-    cout<<endl<<endl;
+    cout<<endl<<endl;*/
 
     // Procedura di inserimento degli esami nel calendario
 
@@ -143,6 +190,8 @@ int main()
                 {
                     while ((aula<n_aula) && !esame[esame[i].id_parall[n]-1].piazzato)
                     {
+                        // ////////////////////////
+
                         for(int j=0; j<esame[esame[i].id_parall[n]-1].durata; j++)
                         {
                             for (int k=0; k<n_aula; k++)
@@ -153,6 +202,9 @@ int main()
                             if (m[giorno][slot+j][aula].id_esame!=0)
                                 mettibile = false;
                         }
+
+                        // //////////////////////
+
                         if(mettibile && prof_libero)
                         {
                             esame[esame[i].id_parall[n]-1].piazzato=true;
@@ -184,7 +236,9 @@ int main()
 
     // Stampa del calendario compilato e dell'elenco degli esami per sapere quali sono rimasti eventualmente non messi
 
-    cout<<"Calendario: "<<endl<<endl;
+    print_calendario(m);
+
+    /*cout<<"Calendario: "<<endl<<endl;
     cout<<"Id esame - Durata - Prof     > Aule"<<endl<<endl<<"             v"<<endl<<"      Slot e Giorni"<<endl<<endl<<endl;
 
     for(int i=0; i<n_giorno; i++)
@@ -198,9 +252,11 @@ int main()
             cout<<endl;
         }
         cout<<endl<<endl;
-    }
+    }*/
 
-    cout<<endl;
+    print_esami(esame);
+
+    /*cout<<endl;
     for(int i=0; i<n_esame; i++)
     {
         cout<<"Esame id: "<<esame[i].id<<"\tStato: ";
@@ -223,5 +279,5 @@ int main()
         }
         cout<<endl;
     }
-    cout<<endl<<endl;
+    cout<<endl<<endl;*/
 }
