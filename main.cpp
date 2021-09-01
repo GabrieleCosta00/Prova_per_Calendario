@@ -3,7 +3,7 @@
 #define n_giorno 5
 #define n_slot 6
 #define n_aula 4
-#define n_esame 10
+#define n_esame 20
 #define n_max_parall 5
 
 using namespace std;
@@ -143,6 +143,8 @@ int main()
                 {
                     while ((aula<n_aula) && !esame[esame[i].id_parall[n]-1].piazzato)
                     {
+                        // ////////////////////////
+
                         for(int j=0; j<esame[esame[i].id_parall[n]-1].durata; j++)
                         {
                             for (int k=0; k<n_aula; k++)
@@ -153,6 +155,9 @@ int main()
                             if (m[giorno][slot+j][aula].id_esame!=0)
                                 mettibile = false;
                         }
+
+                        // //////////////////////
+
                         if(mettibile && prof_libero)
                         {
                             esame[esame[i].id_parall[n]-1].piazzato=true;
