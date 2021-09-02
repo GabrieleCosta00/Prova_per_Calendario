@@ -11,7 +11,7 @@ using namespace std;
 struct exam {
     int id;
     bool piazzato;
-    bool parall_piazzato;
+    __attribute__((unused)) bool parall_piazzato;  // WTF?!?!
     int durata;
     int prof;
     int n_parall;
@@ -31,11 +31,11 @@ void print_esami(const exam* esame){
     for(int i=0; i<n_esame; i++)
     {
         cout<<"Esame id: "<<esame[i].id<<"\tStato: ";
-        for (int j=0; j<n_max_parall; j++)
+        for (int j : esame[i].id_parall)
         {
-            if(esame[i].id_parall[j]!=0)
+            if(j!=0)
             {
-                cout<<esame[esame[i].id_parall[j]-1].piazzato<<" ";
+                cout<<esame[j-1].piazzato<<" ";
             }
             else
             {
@@ -44,9 +44,9 @@ void print_esami(const exam* esame){
         }
         cout<<"\tDurata: "<<esame[i].durata<<
             "\t Prof: "<<esame[i].prof<<"\tPrall: ";
-        for (int j=0; j<n_max_parall; j++)
+        for (int j : esame[i].id_parall)
         {
-            cout<<esame[i].id_parall[j]<<" ";
+            cout<<j<<" ";
         }
         cout<<endl;
     }
@@ -116,9 +116,9 @@ void Inizializza_exam_default(exam* esame){
         esame[i].durata=1;
         esame[i].prof=1001+i;
         esame[i].n_parall=1;
-        for (int j=0; j<n_max_parall; j++)
+        for (int & j : esame[i].id_parall)
         {
-            esame[i].id_parall[j]=0;
+            j=0;
         }
         esame[i].id_parall[0]=esame[i].id;
     }
