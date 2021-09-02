@@ -24,6 +24,8 @@ struct date {
     int prof_esame;
 };
 
+// Procedure
+
 void print_esami(const exam* esame){
     cout<<endl;
     for(int i=0; i<n_esame; i++)
