@@ -4,18 +4,18 @@
 #define n_slot 6
 #define n_aula 4
 #define n_esame 20
-#define n_max_parall 5
+#define n_max_gruppo 5
 
 using namespace std;
 
 struct exam {
     int id;
     bool piazzato;
-    __attribute__((unused)) bool parall_piazzato;  // WTF?!?!
+    __attribute__((unused)) bool gruppo_piazzato;  // WTF?!?!
     int durata;
     int prof;
-    int n_parall;
-    int id_parall[n_max_parall];
+    int n_gruppo;
+    int id_gruppo[n_max_gruppo];
 };
 
 struct date {
@@ -31,7 +31,7 @@ void print_esami(const exam* esame){
     for(int i=0; i<n_esame; i++)
     {
         cout<<"Esame id: "<<esame[i].id<<"\tStato: ";
-        for (int j : esame[i].id_parall)
+        for (int j : esame[i].id_gruppo)
         {
             if(j!=0)
             {
@@ -43,8 +43,8 @@ void print_esami(const exam* esame){
             }
         }
         cout<<"\tDurata: "<<esame[i].durata<<
-            "\t Prof: "<<esame[i].prof<<"\tPrall: ";
-        for (int j : esame[i].id_parall)
+            "\t Prof: "<<esame[i].prof<<"\tGruppo: ";
+        for (int j : esame[i].id_gruppo)
         {
             cout<<j<<" ";
         }
@@ -71,22 +71,20 @@ void print_calendario(date m[][n_slot][n_aula]){
     }
 }
 
-void Mettibile(exam* esame, date m[][n_slot][n_aula],
-               int cont_esami, int cont_parall, int giorno, int slot, int aula, bool* mettibile){
-    for(int j=0; j<esame[esame[cont_esami].id_parall[cont_parall]-1].durata; j++)
+void Mettibile(exam* esame, date m[][n_slot][n_aula], int cont_esami, int cont_gruppo, int giorno, int slot, int aula, bool* mettibile){
+    for(int j=0; j<esame[esame[cont_esami].id_gruppo[cont_gruppo]-1].durata; j++)
     {
         if (m[giorno][slot+j][aula].id_esame!=0)
             *mettibile = false;
     }
 }
 
-void Prof_libero(exam* esame, date m[][n_slot][n_aula],
-                 int cont_esami, int cont_parall, int giorno, int slot, int aula, bool* prof_libero){
-    for(int j=0; j<esame[esame[cont_esami].id_parall[cont_parall]-1].durata; j++)
+void Prof_libero(exam* esame, date m[][n_slot][n_aula], int cont_esami, int cont_gruppo, int giorno, int slot, int aula, bool* prof_libero){
+    for(int j=0; j<esame[esame[cont_esami].id_gruppo[cont_gruppo]-1].durata; j++)
     {
         for (int k=0; k<n_aula; k++)
         {
-            if(m[giorno][slot+j][k].prof_esame==esame[esame[cont_esami].id_parall[cont_parall]-1].prof && aula!=k)
+            if(m[giorno][slot+j][k].prof_esame==esame[esame[cont_esami].id_gruppo[cont_gruppo]-1].prof && aula!=k)
                 *prof_libero = false;
         }
     }
@@ -112,15 +110,15 @@ void Inizializza_exam_default(exam* esame){
     {
         esame[i].id=i+1;
         esame[i].piazzato=false;
-        esame[i].parall_piazzato=false;
+        esame[i].gruppo_piazzato=false;
         esame[i].durata=1;
         esame[i].prof=1001+i;
-        esame[i].n_parall=1;
-        for (int & j : esame[i].id_parall)
+        esame[i].n_gruppo=1;
+        for (int & j : esame[i].id_gruppo)
         {
             j=0;
         }
-        esame[i].id_parall[0]=esame[i].id;
+        esame[i].id_gruppo[0]=esame[i].id;
     }
 }
 
@@ -148,20 +146,19 @@ void Personalizza_exam(exam* esame){
         esame[i].prof = esame[i+2].prof = esame[i+5].prof;
     }
 
-    esame[0].n_parall=2;
-    esame[0].id_parall[1]=esame[8].id;
-    esame[8].n_parall=2;
-    esame[8].id_parall[1]=esame[0].id;
+    esame[0].n_gruppo=2;
+    esame[0].id_gruppo[1]=esame[8].id;
+    esame[8].n_gruppo=2;
+    esame[8].id_gruppo[1]=esame[0].id;
 }
 
-void Inserisci_esame(exam* esame, date m[][n_slot][n_aula],
-                     int cont_esami, int cont_parall, int giorno, int slot, int aula){
-    esame[esame[cont_esami].id_parall[cont_parall]-1].piazzato=true;
-    for(int j=0; j<esame[esame[cont_esami].id_parall[cont_parall]-1].durata; j++)
+void Inserisci_esame(exam* esame, date m[][n_slot][n_aula], int cont_esami, int cont_gruppo, int giorno, int slot, int aula){
+    esame[esame[cont_esami].id_gruppo[cont_gruppo]-1].piazzato=true;
+    for(int j=0; j<esame[esame[cont_esami].id_gruppo[cont_gruppo]-1].durata; j++)
     {
-        m[giorno][slot+j][aula].id_esame = esame[esame[cont_esami].id_parall[cont_parall]-1].id;
-        m[giorno][slot+j][aula].durata_esame = esame[esame[cont_esami].id_parall[cont_parall]-1].durata;
-        m[giorno][slot+j][aula].prof_esame = esame[esame[cont_esami].id_parall[cont_parall]-1].prof;
+        m[giorno][slot+j][aula].id_esame = esame[esame[cont_esami].id_gruppo[cont_gruppo]-1].id;
+        m[giorno][slot+j][aula].durata_esame = esame[esame[cont_esami].id_gruppo[cont_gruppo]-1].durata;
+        m[giorno][slot+j][aula].prof_esame = esame[esame[cont_esami].id_gruppo[cont_gruppo]-1].prof;
     }
 }
 
@@ -187,29 +184,29 @@ int main()
 
     for (int cont_esami=0; cont_esami<n_esame; cont_esami++)
     {
-        for (int cont_parall=0; cont_parall<esame[cont_esami].n_parall; cont_parall++)
+        for (int cont_gruppo=0; cont_gruppo<esame[cont_esami].n_gruppo; cont_gruppo++)
         {
-            esame[cont_esami].parall_piazzato = true;
-            for (int cont_parall_interno=0; cont_parall_interno<esame[cont_esami].n_parall; cont_parall_interno++)
+            esame[cont_esami].gruppo_piazzato = true;
+            for (int cont_gruppo_interno=0; cont_gruppo_interno<esame[cont_esami].n_gruppo; cont_gruppo_interno++)
             {
-                if (!esame[esame[cont_esami].id_parall[cont_parall_interno]-1].piazzato)
+                if (!esame[esame[cont_esami].id_gruppo[cont_gruppo_interno]-1].piazzato)
                 {
-                    esame[cont_esami].parall_piazzato = false;
+                    esame[cont_esami].gruppo_piazzato = false;
                 }
             }
-            while((giorno<n_giorno) && !esame[esame[cont_esami].id_parall[cont_parall]-1].piazzato)
+            while((giorno<n_giorno) && !esame[esame[cont_esami].id_gruppo[cont_gruppo]-1].piazzato)
             {
-                while(((slot + esame[esame[cont_esami].id_parall[cont_parall]-1].durata - 1)<n_slot) &&
-                !esame[esame[cont_esami].id_parall[cont_parall]-1].piazzato)
+                while(((slot + esame[esame[cont_esami].id_gruppo[cont_gruppo]-1].durata - 1)<n_slot) &&
+                !esame[esame[cont_esami].id_gruppo[cont_gruppo]-1].piazzato)
                 {
-                    while ((aula<n_aula) && !esame[esame[cont_esami].id_parall[cont_parall]-1].piazzato)
+                    while ((aula<n_aula) && !esame[esame[cont_esami].id_gruppo[cont_gruppo]-1].piazzato)
                     {
-                        Mettibile(esame, m, cont_esami, cont_parall, giorno, slot, aula, &mettibile);
-                        Prof_libero(esame, m, cont_esami, cont_parall, giorno, slot, aula, &prof_libero);
+                        Mettibile(esame, m, cont_esami, cont_gruppo, giorno, slot, aula, &mettibile);
+                        Prof_libero(esame, m, cont_esami, cont_gruppo, giorno, slot, aula, &prof_libero);
 
                         if(mettibile && prof_libero)
                         {
-                            Inserisci_esame(esame, m, cont_esami, cont_parall, giorno, slot, aula);
+                            Inserisci_esame(esame, m, cont_esami, cont_gruppo, giorno, slot, aula);
                         }
                         else
                         {
