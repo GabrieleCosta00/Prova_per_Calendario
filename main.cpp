@@ -1,3 +1,11 @@
+/*
+
+ TODO: Non c'è molta coerenza tra giorno-slot ed effettivo calendario: così è come se ci fosse una sola aula e viene
+       ovviamente un calendario molto più lungo del dovuto, senza quindi corrispondenza effettiva tra giorno-slot
+       usati qui e quelli che saranno alla fine. Gli esami che vanno svolti contemporaneamente come vanno gestiti??
+
+ */
+
 #include <iostream>
 
 #define n_giorno 5
@@ -73,13 +81,13 @@ void print_esami(const exam* esame){
 
 void print_calendario_no_aule(date cell[][n_slot]){
     cout<<"Calendario no aule: "<<endl<<endl;
-    cout<<"Id esame - Durata - Prof      > Slot"<<endl<<endl<<"            v"<<endl<<"         Giorni"<<endl<<endl<<endl;
+    cout<<"Id esame - Durata - Prof      > Giorni"<<endl<<endl<<"            v"<<endl<<"           Slot"<<endl<<endl<<endl;
 
-    for(int i=0; i<n_giorno; i++)
+    for(int i=0; i<n_slot; i++)
     {
-        for(int j=0; j<n_slot; j++)
+        for(int j=0; j<n_giorno; j++)
         {
-            cout<<"\t"<<cell[i][j].id_esame<<" - "<<cell[i][j].durata_esame<<" - "<<cell[i][j].prof_esame;
+            cout<<"\t"<<cell[j][i].id_esame<<" - "<<cell[j][i].durata_esame<<" - "<<cell[j][i].prof_esame;
         }
         cout<<endl;
     }
