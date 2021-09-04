@@ -2,7 +2,7 @@
 
 #define n_giorno 5
 #define n_slot 6
-#define n_aula 4
+//#define n_aula 4
 #define n_esame 20
 #define n_max_gruppo 5
 
@@ -53,7 +53,7 @@ void print_esami(const exam* esame){
     cout<<endl<<endl;
 }
 
-void print_calendario(date m[][n_slot][n_aula]){
+/*void print_calendario(date m[][n_slot][n_aula]){
     cout<<"Calendario: "<<endl<<endl;
     cout<<"Id esame - Durata - Prof     > Aule"<<endl<<endl<<"             v"<<endl<<"      Slot e Giorni"<<endl<<endl<<endl;
 
@@ -69,8 +69,23 @@ void print_calendario(date m[][n_slot][n_aula]){
         }
         cout<<endl<<endl;
     }
+}*/
+
+void print_calendario_no_aule(date cell[][n_slot]){
+    cout<<"Calendario no aule: "<<endl<<endl;
+    cout<<"Id esame - Durata - Prof      > Slot"<<endl<<endl<<"            v"<<endl<<"         Giorni"<<endl<<endl<<endl;
+
+    for(int i=0; i<n_giorno; i++)
+    {
+        for(int j=0; j<n_slot; j++)
+        {
+            cout<<"\t"<<cell[i][j].id_esame<<" - "<<cell[i][j].durata_esame<<" - "<<cell[i][j].prof_esame;
+        }
+        cout<<endl;
+    }
 }
 
+/*
 void Mettibile(exam* esame, date m[][n_slot][n_aula], int cont_esami, int cont_gruppo, int giorno, int slot, int aula, bool* mettibile){
     for(int j=0; j<esame[esame[cont_esami].id_gruppo[cont_gruppo]-1].durata; j++)
     {
@@ -78,8 +93,17 @@ void Mettibile(exam* esame, date m[][n_slot][n_aula], int cont_esami, int cont_g
             *mettibile = false;
     }
 }
+*/
 
-void Prof_libero(exam* esame, date m[][n_slot][n_aula], int cont_esami, int cont_gruppo, int giorno, int slot, int aula, bool* prof_libero){
+void Mettibile_no_aule(exam* esame, date cell[][n_slot], int cont_esami, int cont_gruppo, int giorno, int slot, bool* mettibile){
+    for(int j=0; j<esame[esame[cont_esami].id_gruppo[cont_gruppo]-1].durata; j++)
+    {
+        if(cell[giorno][slot+j].id_esame!=0)
+            *mettibile = false;
+    }
+}
+
+/*void Prof_libero(exam* esame, date m[][n_slot][n_aula], int cont_esami, int cont_gruppo, int giorno, int slot, int aula, bool* prof_libero){
     for(int j=0; j<esame[esame[cont_esami].id_gruppo[cont_gruppo]-1].durata; j++)
     {
         for (int k=0; k<n_aula; k++)
@@ -88,9 +112,9 @@ void Prof_libero(exam* esame, date m[][n_slot][n_aula], int cont_esami, int cont
                 *prof_libero = false;
         }
     }
-}
+}*/
 
-void Inizializza_date(date m[][n_slot][n_aula]){
+/*void Inizializza_date(date m[][n_slot][n_aula]){
     for(int i=0; i<n_giorno; i++)
     {
         for(int j=0; j<n_slot; j++)
@@ -101,6 +125,18 @@ void Inizializza_date(date m[][n_slot][n_aula]){
                 m[i][j][k].durata_esame=0;
                 m[i][j][k].prof_esame=0;
             }
+        }
+    }
+}*/
+
+void Inizializza_date_no_aule(date cell[][n_slot]){
+    for(int i=0; i<n_giorno; i++)
+    {
+        for(int j=0; j<n_slot; j++)
+        {
+            cell[i][j].id_esame=0;
+            cell[i][j].durata_esame=0;
+            cell[i][j].prof_esame=0;
         }
     }
 }
@@ -152,7 +188,7 @@ void Personalizza_exam(exam* esame){
     esame[8].id_gruppo[1]=esame[0].id;
 }
 
-void Inserisci_esame(exam* esame, date m[][n_slot][n_aula], int cont_esami, int cont_gruppo, int giorno, int slot, int aula){
+/*void Inserisci_esame(exam* esame, date m[][n_slot][n_aula], int cont_esami, int cont_gruppo, int giorno, int slot, int aula){
     esame[esame[cont_esami].id_gruppo[cont_gruppo]-1].piazzato=true;
     for(int j=0; j<esame[esame[cont_esami].id_gruppo[cont_gruppo]-1].durata; j++)
     {
@@ -160,19 +196,31 @@ void Inserisci_esame(exam* esame, date m[][n_slot][n_aula], int cont_esami, int 
         m[giorno][slot+j][aula].durata_esame = esame[esame[cont_esami].id_gruppo[cont_gruppo]-1].durata;
         m[giorno][slot+j][aula].prof_esame = esame[esame[cont_esami].id_gruppo[cont_gruppo]-1].prof;
     }
+}*/
+
+void Inserisci_esame_no_aule(exam* esame, date cell[][n_slot], int cont_esami, int cont_gruppo, int giorno, int slot){
+    esame[esame[cont_esami].id_gruppo[cont_gruppo]-1].piazzato=true;
+    for(int j=0; j<esame[esame[cont_esami].id_gruppo[cont_gruppo]-1].durata; j++)
+    {
+        cell[giorno][slot+j].id_esame = esame[esame[cont_esami].id_gruppo[cont_gruppo]-1].id;
+        cell[giorno][slot+j].durata_esame = esame[esame[cont_esami].id_gruppo[cont_gruppo]-1].durata;
+        cell[giorno][slot+j].prof_esame = esame[esame[cont_esami].id_gruppo[cont_gruppo]-1].prof;
+    }
 }
 
 int main()
 {
-    int giorno=0, slot=0, aula=0;
-    date m[n_giorno][n_slot][n_aula];
+    int giorno=0, slot=0/*, aula=0*/;
+//    date m[n_giorno][n_slot][n_aula];
+    date cell[n_giorno][n_slot];
     exam esame[n_esame];
     bool mettibile = true;
-    bool prof_libero = true;
+//    bool prof_libero = true;
 
     // inizializzazioni
 
-    Inizializza_date(m);
+//    Inizializza_date(m);
+    Inizializza_date_no_aule(cell);
     Inizializza_exam_default(esame);
     Personalizza_exam(esame);
 
@@ -182,7 +230,7 @@ int main()
 
     // Procedura di inserimento degli esami nel calendario
 
-    for (int cont_esami=0; cont_esami<n_esame; cont_esami++)
+    /*for (int cont_esami=0; cont_esami<n_esame; cont_esami++)
     {
         for (int cont_gruppo=0; cont_gruppo<esame[cont_esami].n_gruppo; cont_gruppo++)
         {
@@ -223,12 +271,49 @@ int main()
             }
             giorno=0;
         }
+    }*/
+
+    for (int cont_esami=0; cont_esami<n_esame; cont_esami++)
+    {
+        for (int cont_gruppo=0; cont_gruppo<esame[cont_esami].n_gruppo; cont_gruppo++)
+        {
+            esame[cont_esami].gruppo_piazzato = true;
+            for (int cont_gruppo_interno=0; cont_gruppo_interno<esame[cont_esami].n_gruppo; cont_gruppo_interno++)
+            {
+                if (!esame[esame[cont_esami].id_gruppo[cont_gruppo_interno]-1].piazzato)
+                {
+                    esame[cont_esami].gruppo_piazzato = false;
+                }
+            }
+            while((giorno<n_giorno) && !esame[esame[cont_esami].id_gruppo[cont_gruppo]-1].piazzato)
+            {
+                while(((slot + esame[esame[cont_esami].id_gruppo[cont_gruppo]-1].durata - 1)<n_slot) &&
+                      !esame[esame[cont_esami].id_gruppo[cont_gruppo]-1].piazzato)
+                {
+                    Mettibile_no_aule(esame, cell, cont_esami, cont_gruppo, giorno, slot, &mettibile);
+                    if(mettibile)
+                    {
+                        Inserisci_esame_no_aule(esame, cell, cont_esami, cont_gruppo, giorno, slot);
+                    }
+                    else
+                    {
+                        mettibile = true;
+                        slot++;
+                    }
+
+                }
+                slot=0;
+                giorno++;
+            }
+            giorno=0;
+        }
     }
 
     cout<<"\t----------------------------------------------------------------------"<<endl<<endl<<endl;
 
     // Stampa del calendario compilato e dell'elenco degli esami per sapere quali sono rimasti eventualmente non messi
 
-    print_calendario(m);
+//    print_calendario(m);
+    print_calendario_no_aule(cell);
     print_esami(esame);
 }
