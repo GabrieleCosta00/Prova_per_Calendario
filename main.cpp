@@ -232,3 +232,5 @@ int main()
     print_calendario(m);
     print_esami(esame);
 }
+
+//  Secondo me non funziona come dovrebbe
